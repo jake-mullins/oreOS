@@ -1,0 +1,2 @@
+Boot sector:
+	512 bytes ending in 0xaa55 which is rep as 1010101001010101
