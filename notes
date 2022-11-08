@@ -1,2 +1,61 @@
 Boot sector:
+	Contains a bootloader
 	512 bytes ending in 0xaa55 which is rep as 1010101001010101
+Bootloaders have a bunch of different varieties
+	Single stage:
+		Single file loaded in whole by BIOS. Normally 512 bytes. Probably what I'm gonna use
+	Two-Stage:
+		Small bootloader loads up a larger second bootloader. Useful for a really complex OS. Utilized by GRUB
+	Mixed Bootloader:
+		Similar to two-stage
+POST: Power-On-Self-Test
+	Various tests, ending in loading a bootable device
+BIOS checks for 0xaa55 if it is bootable. The value of value of registers upon boot up is implementation defined
+8-bit DL reg holds the drive cdoe from where boot code was loaded
+Bootloader loads kernel into memory while in Real Mode
+
+What is Real Mode?
+Real Address Mode - 8086 + later in x86
+	20 bit segmented memory space 1048576 possible addresses ~1MB
+	Access to peripherals
+	NO Memory protection/Multitasking
+Protected Mode - Is this User Mode
+	24 bit physical space
+	30 bit Virtual space
+	Memory protection used by GDT + LDT
+		Global Descriptor Table
+		Local Descriptor Table
+	8192/2^13 segment descriptors, each with 64 KB. Each segment can be assigned a ring level. WHAT IS A RING LEVEL?
+=== PROTECTION RINGS ===
+Hierarchy of processes on a computer. 4 Levels from 0 to 3 0 being most privileged. Enforced by the hardware itself
+0 - Kernel
+1 - Device Drivers
+2 - Device Drivers
+3 - Applications
+Control gates exist on the inward borders of outer rings and outward borders of inner rings. These are used to ensure security. Snapchat on Ring 3 has to ASK Ring 2 for webcam access. An ssh client on ring 3 has to ask ring 2 which might have to ask ring 1 to open a port.
+Modern CPUs use only 2 rings. Windows 7 and earlier use ring 0 - kernel and ring 3 - user. 
+ISTG half this stuff is learning old vocab. 
+
+=== KINDS OF KERNELS ===
+Different types of kernels, mainly concerned abt Microkernel/Monolithic kernel
+Microkernel - Seperation of user and kernel programs
+	Hard to design
+	Smaller (obvi)
+	Easier to extend
+	Slower, needs to add calls to mix
+	Fit in L1 cache of a processor
+	Crash less frequently
+Monolithic - OS is one completely kernel program, including applications. Meaning everything operates as part of the same address space
+	Faster, don't need to add calls to API/ABI of kernel
+	LINUXy kind of kernel. 
+	Use signals + sockets for interprocess stuff
+	Crash consistently
+
+ANYWAY, back to before PROTECTION RINGS
+Each of the 8192 64 KB segments in memory are used for 
+
+=== x86 INTO BINARY ===
+nasm boot_sect.asm -f bin -o boot_sect.bin
+-f bin for raw binary with no metagarbage
+-o for output
+

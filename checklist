@@ -1,0 +1,10 @@
+Goals:
+	Create an OS to run a simple game, like breakout
+	Hopefully eventually to design it, then build it, jdh style
+	
+Immediate
+	x Get a bootsector written
+	o Get bootsector booted
+		- I THINK it's working, but idk. bochs is not giving me an error when i change the magic number
+	o Learn protected mode, real mode, etc etc
+	o nasm? Learn it
