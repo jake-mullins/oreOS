@@ -59,3 +59,65 @@ nasm boot_sect.asm -f bin -o boot_sect.bin
 -f bin for raw binary with no metagarbage
 -o for output
 
+=== Interrupts ===
+Interrupt Descriptor Table IDT in x86. I'd guess it's at 0x0, like the IVT
+Protected version of Real IVT. More limited, but it's what all OS run on, so it's fine.
+	Real mode is 16 bit backwards compatibility version in x86. Sucks, low ram, no GDT.
+	Protected is betterer, but only 4 Gig of address space. Could be improved with virtual addressing probably
+Interrupts interrupt the cpu for important ops, like receiving and recording keyboard input
+Can use interrupts to print chars to screen
+Exceptions are things that stop code execution. DOES THIS MEAN THEY ONLY HAPPEN ON HARDWARE ERRORS?
+Interrupt Request IRQ - Given by hardware on INTR pin, or discrete controllers Programmable Interrupt Controller (PIC), Intel 8259, which serializes requests. Interfaces using GDT.
+Can write Message Signaled Interrupts, using memory instead of a register, or a hardware line. IS THIS ONLY FOR PERIPHERALS? THE EXAMPLE GIVEN WAS PCI
+Software Interrupts mean that software needs attention from kernel, ie syscalls. x86 INT instruction
+Recommended first 32 vectors in IVT is for exceptions, you want as much specificness as possible.
+When a key is pressed
+	Keyboard tells Programmable Interrupt Controller PIC
+	PIC calls an interrupt. Since it is a keyboard, calls IRQ 1, as specificed by the PIC.
+	PIC decides when to current IRQ send to CPU AND translate to Interrupt Vector (IV?)
+LEARN ABOUT 2 PIC SYSTEMS FROM THE PIC'S PERSPECTIVE FROM https://wiki.osdev.org/Interrupts
+ INCLUDE MORE AS I LEARN
+=== INT 10H or 16 ===
+For basic graphics
+https://en.wikipedia.org/wiki/INT_10H
+
+=== REGISTERS ===
+Negligible delay compared to even RAM access. Hold 16 bits each
+Can manipulate individual nibbles
+	mov ax, 0x0000
+	mov ah, 0x56
+	mov al, 0x23
+	ax = 0x5623
+	mov ah, 0x16
+	ax = 0x1623
+=== ORGANIZATION ===
+Bootsector is put into 0x7c00 so it doesn't trample over anything the bios has worked on in the past
+Everything starts at:
+0x0	- IVT Interrupt Vector Table
+0x400	- BIOS Data Area
+0x500	- Free
+0x7c00	- Loaded Boot sector
+0x7e00	- Free
+0x9fc00	- Extended BIOS Data Area
+0xA0000 - Video Memory
+0xC0000 - BIOS
+0x100000- Free
+
+Can use "[org 0x7c00]" to define offsets for absolute memory addresses
+To print a full string instead of just the char-by-char, use interrupt 0x21, and function in ah 0x9.
+
+
+=== STACK ===
+regs sp(stack pointer), bp(base pointer) for stack top and base,
+	mov bp, 0x8000
+	mov sp, bp
+	
+	push 'a'
+bp will still be 0x8000
+sp will be 0x8010 because since 16-bit real mode, it saves a 16 bit value, even if it's only 8 bits. IS THERE A WAY TO GET AROUND THIS AND BE MORE MEMORY EFFICIENT?
+
+	pop bx	will put value at sp into bx, and move it back 16/0x10 bits
+
+=== FUNCTIONS ===
+Instruction Counter stored in ip(instruction pointer) register 
+generally, push any registers you're gonna alter to the stack. Can use pusha and popa commands for that, pushing and popping all registers to stack

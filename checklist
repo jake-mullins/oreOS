@@ -1,10 +1,14 @@
 Goals:
-	Create an OS to run a simple game, like breakout
+	Create an OS to run a simple game, like breakout or to run BAD APPLE
 	Hopefully eventually to design it, then build it, jdh style
 	
 Immediate
 	x Get a bootsector written
-	o Get bootsector booted
-		- I THINK it's working, but idk. bochs is not giving me an error when i change the magic number
+	x Get bootsector booted
+		x I THINK it's working, but idk. bochs is not giving me an error when i change the magic number
+		x Used qemu instead. LEss config needs to be done
 	o Learn protected mode, real mode, etc etc
 	o nasm? Learn it
+		x Can compile basic x86 assembly to bin with nasm <filename> -f bin -o <outputname>
+		x Anything else I need?
+	o Really get down interrupts
